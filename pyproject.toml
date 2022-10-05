@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "extra-datascience-tools"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "Python package which offers additional tools for data scientists."
 authors = ["Tomer Gabay <tomergabay001@gmail.com>"]
 readme = "README.md"
 packages = [{include = "extra_ds_tools", from = "src"}]

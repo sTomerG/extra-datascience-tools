@@ -9,7 +9,7 @@
 :relative-images:
 ``` -->
 # Python package with extra tools for data science.
-Welcome to `extra-datascience-tools`, a Python package which offers addition tools for data scientists. These tools include or will include e.g.:
+Welcome to `extra-datascience-tools`, a Python package which offers additional tools for data scientists. These tools include or will include e.g.:
 - functions
 - classes
 - decorators
@@ -31,7 +31,7 @@ pip install extra-datascience-tools
 To install extra-datascience-tools without using PyPi
 ```console
 git clone https://github.com/sTomerG/extra-datascience-tools.git
-cd extra-data-science-tools
+cd extra-datascience-tools
 pip install .
 ```
 If problems arise please upgrade pip:
@@ -39,19 +39,15 @@ If problems arise please upgrade pip:
 python3 -m pip install --upgrade pip
 ```
 
+## Usage
+    >>> import extra_ds_tools
+
 ```{toctree}
 :caption: 'Contents:'
-:maxdepth: 4
+:maxdepth: 2
 
 installation
 notebooks/tutorial
 autoapi/index
 about
 ```
-
-
-## Indices and tables
-
-- {ref}`genindex`
-- {ref}`modindex`
-- {ref}`search`
