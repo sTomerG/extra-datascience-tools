@@ -12,7 +12,7 @@ Welcome to `extra-datascience-tools`, a Python package which offers additional t
 
 ..which are useful and often used for most data science projects, so that you don't need to rewrite the same code over again or invent it yourself. Please be aware that this package was launched in oktober 2022 and thus the current amount of features might be limited, but the features that are present can be of great use.
 
- Personally I'm a huge fan of well-documented code, and this packages strives for quality and well-documented code over lots of under-documented features. Please visit [ReadTheDocs](https://extra-datascience-tools.readthedocs.io/en/latest/#) for this package's extensive documentation.
+ Personally I'm a huge fan of well-documented code, and this package strives for quality and well-documented code over lots of under-documented features. Please visit [ReadTheDocs](https://extra-datascience-tools.readthedocs.io/en/latest/#) for this package's extensive documentation.
 
 **[Github page](https://github.com/sTomerG/extra-datascience-tools)**
 

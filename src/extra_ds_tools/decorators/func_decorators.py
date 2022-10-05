@@ -8,24 +8,25 @@ from tabulate import tabulate
 
 
 def timeit_arg_info_dec(
+    function: None = None,
     print_output: bool = True,
     param_info: bool = True,
     round_seconds: Optional[int] = None,
-    function: None = None,
 ) -> Callable:
     """Decorator that prints the time a function took to execute, and information on its \
         parameters and arguments.
 
     Parameters
     ----------
+    function : None, optional
+        For compatability and should always be None, by default None
     print_output : bool, optional
         If True prints the output of the decorated function, by default True
     param_info : bool, optional
         If true prints information about parameters and their arguments, by default True
     round_seconds : Optional[int], optional
         If set rounds the amount of seconds it took the decorated func to exectute, by default None
-    function : None, optional
-        For compatability and should always be None, by default None
+
     Returns
     -------
     Callable
@@ -35,7 +36,7 @@ def timeit_arg_info_dec(
     --------
 
     >>> @timeit_arg_info_dec
-    >>> def illustrate_decorater(a_number: int, text: str, l: List[int], df: pd.DataFrame, either: bool = True, *args, **kwargs):
+    >>> def illustrate_decorater(a_number: int, text: str, lst: List[int], df: pd.DataFrame, either: bool = True, *args, **kwargs):
     >>>     from time import sleep
     >>>     sleep(1)
     >>>     return "Look how informative!"
@@ -50,7 +51,7 @@ def timeit_arg_info_dec(
     --  -------------  ---------------------------  ---------------  ---------------------------  ------------------------  ---------
     0  a_number       int                                           int                          42
     1  text           str                                           str                          Bob                       3
-    2  l              List[int]                                     list                         [0, 1, 2,  .. 7, 98, 99]  100
+    2  lst            List[int]                                     list                         [0, 1, 2,  .. 7, 98, 99]  100
     3  df             pandas.core.frame.DataFrame                   pandas.core.frame.DataFrame                            (1, 9)
     4  either         bool                         True             bool                         False
     5  kwarg['Even']                                                str                          this works!               11
@@ -61,7 +62,7 @@ def timeit_arg_info_dec(
 
 
     >>> @timeit_arg_info_dec(print_output=False, round_seconds=1)
-    >>> def illustrate_decorater(a_number: int, text: str, l: List[int], df: pd.DataFrame, either: bool = True, *args, **kwargs):
+    >>> def illustrate_decorater(a_number: int, text: str, lst: List[int], df: pd.DataFrame, either: bool = True, *args, **kwargs):
     >>>     from time import sleep
     >>>     sleep(1)
     >>>     return "Look how informative!"
@@ -76,7 +77,7 @@ def timeit_arg_info_dec(
     --  -------------  ---------------------------  ---------------  ---------------------------  ------------------------  ---------
     0  a_number       int                                           int                          42
     1  text           str                                           str                          Bob                       3
-    2  l              List[int]                                     list                         [0, 1, 2,  .. 7, 98, 99]  100
+    2  lst            List[int]                                     list                         [0, 1, 2,  .. 7, 98, 99]  100
     3  df             pandas.core.frame.DataFrame                   pandas.core.frame.DataFrame                            (1, 9)
     4  either         bool                         True             bool                         False
     5  kwarg['Even']                                                str                          this works!               11
