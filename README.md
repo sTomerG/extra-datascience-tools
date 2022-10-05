@@ -8,13 +8,12 @@ Welcome to `extra-datascience-tools`, a Python package which offers addition too
 - functions
 - classes
 - decorators
-- graphs
+- plots
 
-which are useful and often used for most data science projects, so that you don't need to rewrite the same code over again or invent it yourself. Please be aware that this package was launched in oktober 2022 and thus the current amount of features might be limited, but the features that are present can be of great use.
+..which are useful and often used for most data science projects, so that you don't need to rewrite the same code over again or invent it yourself. Please be aware that this package was launched in oktober 2022 and thus the current amount of features might be limited, but the features that are present can be of great use.
 
+ Personally I'm a huge fan of well-documented code, and this packages strives for quality and well-documented code over lots of under-documented features.
 
-## About 
-extra-datascience-tools is a package that strives to provide additional features to data scientists which are not yet found in other packages. Personally I'm a huge fan of well-documented code, and this packages strives for quality and well-documented code over lots of under-documented features.
 
 ## Installation
 
