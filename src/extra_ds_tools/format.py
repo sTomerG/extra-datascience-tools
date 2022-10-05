@@ -1,10 +1,8 @@
 import inspect
 import re
-from collections import defaultdict
 from inspect import getfullargspec, signature
-from typing import Any, Callable, Iterable, List, Tuple
+from typing import Any, Callable, List
 
-import numpy as np
 import pandas as pd
 
 
@@ -34,7 +32,7 @@ def args_and_kwargs_repr(func: Callable, *args, **kwargs) -> List[dict]:
     >>> args_and_kwargs_repr(multiply_text, *('arrow','knee'), **{'n': 2})
     [{'param': 'text',
     'type_hint': 'str',
-    'default_value': inspect._empty,
+    'default_value': '',
     'arg_type': 'str',
     'arg_value': 'arrow',
     'arg_len': 5},
@@ -44,11 +42,10 @@ def args_and_kwargs_repr(func: Callable, *args, **kwargs) -> List[dict]:
     'arg_type': 'str',
     'arg_value': 'knee',
     'arg_len': 4},
-    {'param': 'n',
-    'type_hint': 'int',
-    'default_value': 1,
+    {'param': "kwarg['p']",
     'arg_type': 'int',
-    'arg_value': '2',
+    'arg_value':
+    '2',
     'arg_len': ''}]
 
     >>> def print_every_arg(text: str, *args):
@@ -62,7 +59,7 @@ def args_and_kwargs_repr(func: Callable, *args, **kwargs) -> List[dict]:
                                 ['combine', 'with', 'decorator']))
     [{'param': 'text',
     'type_hint': 'str',
-    'default_value': inspect._empty,
+    'default_value': '',
     'arg_type': 'str',
     'arg_value': 'perfect',
     'arg_len': 7},
@@ -92,7 +89,177 @@ def args_and_kwargs_repr(func: Callable, *args, **kwargs) -> List[dict]:
     for key, arg in kwargs.items():
         args_and_kwargs.append(arg_info(key, arg, sign, fullargspec))
 
+    params = [info["param"] for info in args_and_kwargs]
+    if len(set(params)) < len(params):
+        raise TypeError(
+            "Two values were tried to set to the same parameter."
+            f"\nFound values for the following parameters:\n{params}"
+        )
     return args_and_kwargs
+
+
+def arg_info(
+    key: str,
+    arg: Any,
+    sign: inspect.signature,
+    fullargspec: inspect.FullArgSpec,
+) -> dict:
+    """Returns a dictionairy with comprehensive information about a single argument.
+
+    Parameters
+    ----------
+    key : str
+        The name of the keyword argument of a function.
+    arg : Any
+        The argument value passed into the function.
+    sign : inspect.signature
+        The signature of the function from the inspect module.
+    fullargspec : inspect.FullArgSpec
+        The FullArgSpec class of the function from the inspect module.
+
+    Returns
+    -------
+    dict
+        A comprehensive dict with information about the argument.
+
+    Examples
+    --------
+    >>> from inspect import getfullargspec, signature
+    >>>
+    >>> def multiply_text(text: str, n: int = 1):
+    >>>     return text * n
+    >>>
+    >>> sign = signature(multiply_text)
+    >>> fullargspec = getfullargspec(multiply_text)
+    >>>
+    >>> arg_info(key='text', arg='hello', sign=sign, fullargspec=fullargspec)
+    {'param': 'text',
+    'type_hint': 'str',
+    'default_value': '',
+    'arg_type': 'str',
+    'arg_value': 'hello',
+    'arg_len': 5}
+
+    >>> arg_info(key='n', arg=[1,2], sign=sign, fullargspec=fullargspec)
+    {'param': 'n',
+    'type_hint': 'int',
+    'default_value': 1,
+    'arg_type': 'list',
+    'arg_value': '[1, 2]',
+    'arg_len': 2}
+
+    See Also
+    --------
+    Uses:
+    :func:`~extra_ds_tools.format.class_as_str_repr`
+    :func:`~extra_ds_tools.format.truncated_value`
+    :func:`~extra_ds_tools.format.make_empty_value_printable`
+    """
+    # store the value and type of the argument
+    arg_type: str = class_as_str_repr(arg)
+    arg_value: str = truncated_value(arg)
+
+    # check if value has a shape, e.g. with numpy arrays and pandas DataFrames
+    try:
+        arg_len = str(arg.shape)
+    except AttributeError:
+        # check if value has a length
+        try:
+            arg_len = len(arg)
+        except TypeError:
+            arg_len = ""
+
+    # if the key is in int, it's an *args argument
+    if isinstance(key, int):
+        func_args = fullargspec.args
+        try:
+            key = func_args[key]
+        except IndexError:
+            return {
+                "param": f"args[{key}]",
+                "arg_type": arg_type,
+                "arg_value": arg_value,
+                "arg_len": arg_len,
+            }
+    # if the key is a string but doesn't have a parameter, it's a kwarg
+    try:
+        param_info = sign.parameters[key]
+    except KeyError:
+        return {
+            "param": f"kwarg['{key}']",
+            "arg_type": arg_type,
+            "arg_value": arg_value,
+            "arg_len": arg_len,
+        }
+    # get the parameter type hint
+    type_hint = class_as_str_repr(param_info.annotation)
+
+    # get the default value of the parameter
+    default_value: Any = param_info.default
+    default_value = make_empty_value_printable(default_value)
+
+    return {
+        "param": key,
+        "type_hint": type_hint,
+        "default_value": default_value,
+        "arg_type": arg_type,
+        "arg_value": arg_value,
+        "arg_len": arg_len,
+    }
+
+
+def truncated_value(arg: Any, str_limit: int = 20) -> str:
+    """Return a string representation of a value, truncated when it's over the str_limit. \
+        This is useful for when you don't want to print a long list but would like to see \
+            some output.
+
+    Parameters
+    ----------
+    arg : Any
+        Any argument.
+    str_limit : int, optional
+        The limit of the summary, by default 20
+
+    Returns
+    -------
+    str
+        Arg as a string, truncated so that if it's string representation's length >
+        str_limit it's string representation gets truncated.
+
+    Raises
+    ------
+    ValueError
+        If str_limit <= 0
+
+    Examples
+    --------
+    >>> truncated_value(42)
+    42
+
+    Not that interesting. Until we get to strings, lists or other objects with
+    a large length.
+
+    >>> truncated_value(list(range(100)), str_limit = 20)
+    [0, 1, 2,  .. 7, 98, 99]
+    """
+    if str_limit <= 0:
+        raise ValueError(f"str_limit must be > 0, got {str_limit}")
+    len_str_repr = len(str(arg))
+
+    # pandas DataFrames and Series have unclear string representation
+    # so don't return those
+    if len_str_repr <= str_limit and not isinstance(
+        arg, (pd.DataFrame, pd.Series)
+    ):
+        return f"{arg}"
+    else:
+        if isinstance(arg, (pd.Series, pd.DataFrame)):
+            return ""
+        else:
+            return (
+                f"{str(arg)[:int(str_limit/2)]} .. "
+                f"{str(arg)[-int(str_limit/2):]}"
+            )
 
 
 def class_as_str_repr(instance: Any) -> str:
@@ -141,121 +308,6 @@ def class_as_str_repr(instance: Any) -> str:
         return f"""{re.findall("'([^']*)'", str(type(instance)))[0]}"""
 
 
-def arg_info(
-    key: str,
-    arg: Any,
-    sign: inspect.signature,
-    fullargspec: inspect.FullArgSpec,
-) -> dict:
-    """Returns a text to describe the expected argument and the type of the \
-    inputted argument based on kwarg.
-
-    Parameters
-    ----------
-    key : str
-        The name of the keyword argument of a function.
-    arg : Any
-        The argument value passed into the function.
-    sign : inspect.signature
-        The signature of the function from the inspect module.
-    fullargspec : inspect.FullArgSpec
-        The FullArgSpec class of the function from the inspect module.
-
-    Returns
-    -------
-    dict
-        A string representing the keyword argument and the type of the
-        inputted value.
-
-    Examples
-    --------
-    >>> from inspect import getfullargspec, signature
-    >>>
-    >>> def multiply_text(text: str, n: int = 1):
-    >>>     return text * n
-    >>>
-    >>> sign = signature(multiply_text)
-    >>> fullargspec = getfullargspec(multiply_text)
-    >>>
-    >>> arg_info(key='text', arg='hello', sign=sign,
-                                        fullargspec=fullargspec)
-    {'param': 'text',
-    'type_hint': 'str',
-    'default_value': '',
-    'arg_type': 'str',
-    'arg_value': 'hello',
-    'arg_len': 5}
-
-    >>> arg_info(key='n', arg=[1,2], sign=sign,
-                                                fullargspec=fullargspec)
-    {'param': 'n',
-    'type_hint': 'int',
-    'default_value': 1,
-    'arg_type': 'list',
-    'arg_value': '[1, 2]',
-    'arg_len': 2}
-
-    See Also
-    --------
-    Uses:
-    :func:`~extra_ds_tools.format.class_as_str_repr`
-    :func:`~extra_ds_tools.format.arg_truncated`
-    :func:`~extra_ds_tools.format.make_empty_value_printable`
-    """
-
-    # store the value and type of the argument
-    arg_type: str = class_as_str_repr(arg)
-    arg_value: str = arg_truncated(arg)
-
-    # check if value has a shape, e.g. with numpy arrays and pandas DataFrames
-    try:
-        arg_len = arg.shape
-    except AttributeError:
-        # check if value has a length
-        try:
-            arg_len = len(arg)
-        except TypeError:
-            arg_len = ""
-
-    # if the key is in int, it's an *args argument
-    if isinstance(key, int):
-        func_args = fullargspec.args
-        try:
-            key = func_args[key]
-        except IndexError:
-            return {
-                "param": f"args[{key}]",
-                "arg_type": arg_type,
-                "arg_value": arg_value,
-                "arg_len": arg_len,
-            }
-    # if the key is a string but doesn't have a parameter, it's a kwarg
-    try:
-        param_info = sign.parameters[key]
-    except KeyError:
-        return {
-            "param": f"kwarg['{key}']",
-            "arg_type": arg_type,
-            "arg_value": arg_value,
-            "arg_len": arg_len,
-        }
-    # get the parameter type hint
-    type_hint = class_as_str_repr(param_info.annotation)
-
-    # get the default value of the parameter
-    default_value: Any = param_info.default
-    default_value = make_empty_value_printable(default_value)
-
-    return {
-        "param": key,
-        "type_hint": type_hint,
-        "default_value": default_value,
-        "arg_type": arg_type,
-        "arg_value": arg_value,
-        "arg_len": arg_len,
-    }
-
-
 def make_empty_value_printable(value: Any) -> Any:
     """Makes an empty string or None printable.
 
@@ -296,55 +348,3 @@ def make_empty_value_printable(value: Any) -> Any:
     if value is None:
         return "None"
     return value
-
-
-def arg_truncated(arg: Any, str_limit: int = 20) -> str:
-    """Return the summary of an argument.
-
-    Parameters
-    ----------
-    arg : Any
-        Any argument.
-    str_limit : int, optional
-        The limit of the summary, by default 20
-
-    Returns
-    -------
-    str
-        Arg as a string, truncated so that if it's string representation >
-        str_limit it's string representation gets truncated.
-
-    Raises
-    ------
-    ValueError
-        If str_limit <= 0
-
-    Examples
-    --------
-    >>> arg_truncated(42)
-    42
-
-    Not that interesting. Until we get to strings, lists or other objects with
-    a large length.
-
-    >>> arg_truncated(list(range(100)), str_limit = 20)
-    [0, 1, 2,  .. 7, 98, 99]
-    """
-    if str_limit <= 0:
-        raise ValueError(f"str_limit must be > 0, got {str_limit}")
-    len_str_repr = len(str(arg))
-
-    # pandas DataFrames and Series have unclear string representation
-    # so don't return those
-    if len_str_repr < str_limit and not isinstance(
-        arg, (pd.DataFrame, pd.Series)
-    ):
-        return f"{arg}"
-    else:
-        if isinstance(arg, (pd.Series, pd.DataFrame)):
-            return ""
-        else:
-            return (
-                f"{str(arg)[:int(str_limit/2)]} .. "
-                f"{str(arg)[-int(str_limit/2):]}"
-            )

@@ -8,24 +8,24 @@ from tabulate import tabulate
 
 
 def timeit_arg_info_dec(
-    function: None = None,
     print_output: bool = True,
     param_info: bool = True,
     round_seconds: Optional[int] = None,
+    function: None = None,
 ) -> Callable:
-    """_summary_
+    """Decorator that prints the time a function took to execute, and information on its \
+        parameters and arguments.
 
     Parameters
     ----------
-    function : None, optional
-        For compatability and should always be None, by default None
     print_output : bool, optional
         If True prints the output of the decorated function, by default True
     param_info : bool, optional
         If true prints information about parameters and their arguments, by default True
     round_seconds : Optional[int], optional
         If set rounds the amount of seconds it took the decorated func to exectute, by default None
-
+    function : None, optional
+        For compatability and should always be None, by default None
     Returns
     -------
     Callable
@@ -81,7 +81,6 @@ def timeit_arg_info_dec(
     4  either         bool                         True             bool                         False
     5  kwarg['Even']                                                str                          this works!               11
     illustrate_decorater() took 1.0 seconds to run.
-    'Look how informative!'
     """
 
     def _timeit(func):
