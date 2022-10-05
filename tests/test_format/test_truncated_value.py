@@ -18,8 +18,10 @@ def default_str_limit():
         st.text(),
         st.dates(),
         st.datetimes(),
-        st.dictionaries(keys=st.text(), values=st.text()),
-        st.lists(elements=st.text()),
+        st.dictionaries(
+            keys=st.text(max_size=5), values=st.text(max_size=5), max_size=10
+        ),
+        st.lists(elements=st.text(max_size=5), max_size=5),
     )
 )
 @settings(suppress_health_check=(HealthCheck.function_scoped_fixture,))
@@ -30,12 +32,15 @@ def test_short_arguments(arg, default_str_limit):
 
 @given(
     arg=st.one_of(
-        st.dictionaries(keys=st.text(), values=st.text(), min_size=60),
-        st.lists(elements=st.text(min_size=1), min_size=60),
+        st.dictionaries(
+            keys=st.text(max_size=5), values=st.text(max_size=5), min_size=60
+        ),
+        st.lists(elements=st.text(min_size=1, max_size=5), min_size=60),
     ),
     str_limit=st.integers(min_value=1, max_value=100),
 )
 def test_long_arguments(arg, str_limit):
+    assume(len(str(arg)) > str_limit)
     output = truncated_value(arg, str_limit=str_limit)
     assert str(arg)[: int(str_limit / 2)] in output
     assert str(arg)[-int(str_limit / 2) :] in output

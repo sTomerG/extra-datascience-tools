@@ -11,7 +11,7 @@ def func1(text: str, n: int = 1):
     return
 
 
-def func2(text: Union[str, None]):
+def func2(text: Union[str, int]):
     return
 
 
@@ -63,7 +63,7 @@ def func2(text: Union[str, None]):
             np.array([42]),
             {
                 "param": "text",
-                "type_hint": "Union[str, NoneType]",
+                "type_hint": "Union[str, int]",
                 "default_value": "",
                 "arg_type": "numpy.ndarray",
                 "arg_value": "[42]",

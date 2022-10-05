@@ -15,7 +15,7 @@ from extra_ds_tools.format import class_as_str_repr
         ({"1": 1}, "dict"),
         (np.array([1]), "numpy.ndarray"),
         (pd.DataFrame([1]), "pandas.core.frame.DataFrame"),
-        (Union[List[str], None], "Union[List[str], NoneType]"),
+        (Union[List[str], str], "Union[List[str], str]"),
     ],
 )
 def test_types(arg, type_):
