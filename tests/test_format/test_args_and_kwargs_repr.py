@@ -1,5 +1,3 @@
-import inspect
-
 import pytest
 from extra_ds_tools.format import args_and_kwargs_repr
 
