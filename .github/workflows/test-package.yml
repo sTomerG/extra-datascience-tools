@@ -33,7 +33,7 @@ jobs:
       # number in the cache key, and the "-0" suffix: this allows you to invalidate the cache
       # manually if/when you want to upgrade Poetry, or if something goes wrong.
       - name: cache poetry install
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.local
           key: poetry-cache-${{ runner.os }}-${{ matrix.python-version }}-${{ env.POETRY_VERSION }}
@@ -55,10 +55,14 @@ jobs:
 
       #  Cache your dependencies (i.e. all the stuff in your `pyproject.toml`)
       - name: cache venv
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - run: source .venv/scripts/activate
+        if: runner.os == 'Windows'
+      - run: source .venv/bin/activate
+        if: runner.os != 'Windows'
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
