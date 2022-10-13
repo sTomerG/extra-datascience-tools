@@ -154,7 +154,7 @@ def arg_info(
     :func:`~extra_ds_tools.format.class_as_str_repr`
     :func:`~extra_ds_tools.format.truncated_value`
     :func:`~extra_ds_tools.format.make_empty_value_printable`
-    """
+    """  # noqa
     # store the value and type of the argument
     arg_type: str = class_as_str_repr(arg)
     arg_value: str = truncated_value(arg)
@@ -241,7 +241,7 @@ def truncated_value(arg: Any, str_limit: int = 20) -> str:
 
     >>> truncated_value(list(range(100)), str_limit = 20)
     [0, 1, 2,  .. 7, 98, 99]
-    """
+    """  # noqa
     if str_limit <= 0:
         raise ValueError(f"str_limit must be > 0, got {str_limit}")
     len_str_repr = len(str(arg))

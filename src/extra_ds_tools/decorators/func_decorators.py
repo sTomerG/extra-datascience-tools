@@ -82,7 +82,7 @@ def timeit_arg_info_dec(
     4  either         bool                         True             bool                         False
     5  kwarg['Even']                                                str                          this works!               11
     illustrate_decorater() took 1.0 seconds to run.
-    """
+    """  # noqa
 
     def _timeit(func):
         @wraps(func)

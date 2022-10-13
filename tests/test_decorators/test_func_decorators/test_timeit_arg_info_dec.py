@@ -41,7 +41,7 @@ def test_print_output(capfd):
 
 illustrate_decorater() took 1.0 seconds to run.
 
-'Look how informative!'"""
+'Look how informative!'"""  # noqa
     out, _ = capfd.readouterr()
     assert (
         SequenceMatcher(a=out.strip(), b=expected_output.strip()).ratio()
