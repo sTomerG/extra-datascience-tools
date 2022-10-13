@@ -1,8 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
 # inspired by https://jacobian.org/til/github-actions-poetry/
-name: "Test Package"
 
 on:
   push:
@@ -14,20 +10,17 @@ env:
 
 jobs:
   build:
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", 3.10"]
         os: [ubuntu-latest, macOS-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
     env:
       POETRY_VIRTUALENVS_IN_PROJECT: true
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -36,7 +29,7 @@ jobs:
       # number in the cache key, and the "-0" suffix: this allows you to invalidate the cache
       # manually if/when you want to upgrade Poetry, or if something goes wrong.
       - name: cache poetry install
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: ~/.local
           key: poetry-cache-${{ runner.os }}-${{ matrix.python-version }}-${{ env.POETRY_VERSION }}
@@ -58,14 +51,10 @@ jobs:
 
       #  Cache your dependencies (i.e. all the stuff in your `pyproject.toml`)
       - name: cache venv
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
-      - run: source .venv/scripts/activate
-        if: runner.os == 'Windows'
-      - run: source .venv/bin/activate
-        if: runner.os != 'Windows'
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
