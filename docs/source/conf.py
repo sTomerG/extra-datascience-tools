@@ -19,7 +19,6 @@ release = "0.1.0"
 extensions = [
     "myst_parser",
     "sphinx.ext.duration",
-    "sphinx.ext.autosectionlabel",
     "sphinx.ext.autodoc",
     "sphinxcontrib.napoleon",
     "autoapi.extension",
