@@ -12,6 +12,8 @@ pandas = "^1.5.0"
 seaborn = "^0.12.0"
 numpy = "^1.23.3"
 tabulate = "^0.8.10"
+scipy = "^1.9.2"
+matplotlib = "^3.6.1"
 
 
 [tool.poetry.group.test.dependencies]
@@ -55,7 +57,7 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
-known_third_party = ["extra_ds_tools", "hypothesis", "numpy", "pandas", "pytest", "tabulate"]
+known_third_party = ["extra_ds_tools", "hypothesis", "matplotlib", "numpy", "pandas", "pytest", "scipy", "seaborn", "tabulate"]
 
 [build-system]
 requires = ["poetry-core"]
