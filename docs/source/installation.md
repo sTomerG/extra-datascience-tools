@@ -19,3 +19,7 @@ python3 -m pip install --upgrade pip
 
 ## Usage
     >>> import extra_ds_tools
+
+To see the most used functionalities see the {doc}`notebooks/tutorial`.
+<br>
+To see all functionalities consult the {doc}`autoapi/index`.
