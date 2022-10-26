@@ -18,6 +18,7 @@ Welcome to `extra-datascience-tools`, a Python package which offers additional t
 which are useful and often used for most data science projects, so that you don't need to rewrite the same code over again or invent it yourself. Please be aware that this package was launched in oktober 2022 and thus the current amount of features might be limited, but the features that are present can be of great use.
 
 Read the installation instructions in {doc}`installation`.
+To see the most used functionalities see the {doc}`notebooks/tutorial`.
 To see all functionalities consult the {doc}`autoapi/index`.
 
 ## Installation
