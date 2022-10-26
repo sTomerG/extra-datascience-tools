@@ -57,6 +57,7 @@ exclude = '''
 
 [tool.isort]
 profile = "black"
+line_length = 79
 known_third_party = ["extra_ds_tools", "hypothesis", "matplotlib", "numpy", "pandas", "pytest", "scipy", "seaborn", "tabulate"]
 
 [build-system]

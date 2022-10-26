@@ -2,12 +2,185 @@ from typing import Dict, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import scipy.stats as stats
 import seaborn as sns
+from extra_ds_tools.plots.format import (
+    add_counts_to_xticks,
+    add_counts_to_yticks,
+)
 from extra_ds_tools.transformers.numeric import (
     apply_different_numeric_transformations,
 )
 from numpy.typing import NDArray
+
+
+def stripboxplot(
+    df: pd.DataFrame,
+    cat_col: str,
+    num_col: str,
+    horizontal: bool = False,
+    dropna: bool = False,
+    count_info: bool = True,
+    show_outliers: bool = True,
+    show_legend: bool = False,
+) -> Tuple[plt.Figure, plt.Axes]:
+    """Creates a stripboxplot with extra informative ticks. \
+        Use fig.set_figheight() and/or fig.set_figwidth if labels \
+            are unreadable.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        The DataFrame with the data.
+    cat_col : str
+        Column name with categorical/str values or a few numerical.
+    num_col : str
+        Column name with the numerical values.
+    horizontal : bool, optional
+        Plot the stripboxplot horizontally, by default False
+    dropna : bool, optional
+        Drop na's, by default False
+    count_info : bool, optional
+        Have extra count information on the ticks, by default True
+    show_outliers : bool, optional
+        Show outliers according to Seaborn's boxplot, by default True
+    show_legend : bool, optional
+        Show legend, by default False
+
+    Returns
+    -------
+    Tuple[plt.Figure, plt.Axes]
+        Figure and Axes with the stripboxplot.
+    
+    Examples
+    --------
+    >>> from numpy.random import default_rng
+    >>> import pandas as pd
+    >>> import numpy as np
+    # generate data
+    >>> rng = default_rng(42)
+    >>> cats = ['Cheetah', 'Leopard', 'Puma']
+    >>> cats = rng.choice(cats, size=1000)
+    >>> cats = np.append(cats, [None]*102)
+    >>> weights = rng.integers(25, 100, size=1000)
+    >>> weights = np.append(weights, [np.nan]*100)
+    >>> weights = np.append(weights, np.array([125,135]))
+    >>> rng.shuffle(cats)
+    >>> rng.shuffle(weights)
+    >>> df = pd.DataFrame({'cats': cats, 'weights': weights})
+
+    >>> fig, ax = stripboxplot(df, 'cats', 'weights')
+    >>> fig
+
+    .. image:: /images/stripboxplot_default.png
+
+    Change to horizontal:
+    
+    >>> fig, ax = stripboxplot(df, 'cats', 'weights', horizontal=True)
+    >>> fig
+
+    .. image:: /images/stripboxplot_horizontal.png
+    
+    >>> fig, ax = stripboxplot(df, 'cats', 'weights', horizontal=True, show_outliers=False)
+    >>> fig
+    
+    Remove outliers:
+    
+    .. image:: /images/stripboxplot_no_outliers.png
+    
+    >>> fig, ax = stripboxplot(df, 'cats', 'weights', horizontal=True, show_outliers=False, dropna=True)
+    >>> fig 
+    
+    Drop na statistics:
+    
+    .. image:: /images/stripboxplot_dropna.png
+    
+    Drop extra count info:
+    
+    >>> fig, ax = stripboxplot(df, 'cats', 'weights', count_info = False, horizontal=True, show_outliers=False, dropna=True)
+    >>> fig 
+    
+    .. image:: /images/stripboxplot_nocountinfo.png
+    
+    See Also
+    --------
+    Uses:
+    :func:`~extra_ds_tools.plots.format.add_counts_to_xticks`
+    :func:`~extra_ds_tools.plots.format.add_counts_to_yticks`
+    
+    """  ## noqa
+
+    fig, ax = plt.subplots()
+    df = df.copy()
+    if dropna:
+        df = df.dropna()
+    else:
+        df[cat_col] = df[cat_col].fillna("nan")
+
+    order = df.groupby(cat_col)[num_col].apply(np.median).sort_values().index
+
+    if horizontal:
+        sns.boxplot(
+            data=df,
+            x=num_col,
+            y=cat_col,
+            showfliers=show_outliers,
+            palette="pastel",
+            hue_order=order,
+            ax=ax,
+            order=order,
+        )
+        xlim = ax.get_xlim()
+        ax = sns.stripplot(
+            data=df.loc[
+                lambda d: (d[num_col] >= xlim[0]) & (d[num_col] <= xlim[1])
+            ],
+            x=num_col,
+            y=cat_col,
+            alpha=0.5,
+            palette="bright",
+            hue=cat_col,
+            hue_order=order,
+            ax=ax,
+            order=order,
+        )
+        if count_info:
+            fig, ax = add_counts_to_yticks(
+                fig, ax, df, num_col, cat_col, dropna
+            )
+    else:
+        sns.boxplot(
+            data=df,
+            x=cat_col,
+            y=num_col,
+            showfliers=show_outliers,
+            hue_order=order,
+            palette="pastel",
+            ax=ax,
+            order=order,
+        )
+        ylim = ax.get_ylim()
+        ax = sns.stripplot(
+            data=df.loc[
+                lambda d: (d[num_col] >= ylim[0]) & (d[num_col] <= ylim[1])
+            ],
+            x=cat_col,
+            y=num_col,
+            alpha=0.5,
+            palette="bright",
+            hue=cat_col,
+            hue_order=order,
+            ax=ax,
+            order=order,
+        )
+        if count_info:
+            fig, ax = add_counts_to_xticks(
+                fig, ax, df, cat_col, num_col, dropna
+            )
+
+    ax.legend().set_visible(show_legend)
+    return fig, ax
 
 
 def try_diff_distribution_plots(
