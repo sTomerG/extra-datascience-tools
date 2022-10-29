@@ -72,6 +72,9 @@ def add_counts_to_yticks(
 
     """  # noqa
     # get the counts and the relative counts for the y_column
+
+    df = df.copy()
+    df[y_col] = df[y_col].astype(str)
     cnts = df[y_col].value_counts(dropna=dropna).to_dict()
     rel_cnts = {
         key: round(value / len(df) * 100, 1) for key, value in cnts.items()
@@ -92,12 +95,20 @@ def add_counts_to_yticks(
     # label=(count, rel_to_total%)
     # nan=(count, rel_to_label%)
     # nan_total=(rel_to_total%)
-    new_ylabels = [
-        f"""{lb.get_text()}=({cnts[lb.get_text()]}, {rel_cnts[lb.get_text()]}%)
-nan=({nans.get(lb.get_text(),0)}, {rel_nans.get(lb.get_text(),0)}%)
-nan_total=({round(nans.get(lb.get_text(),0)/n_nans*100,1)}%)"""
-        for lb in ax.get_yticklabels()
-    ]
+    new_ylabels = []
+    for lb in ax.get_yticklabels():
+        try:
+            _ = cnts[lb.get_text()]
+        except KeyError:
+            new_ylabels.append("")
+        else:
+            new_ylabels.append(
+                f"{lb.get_text()}=({cnts[lb.get_text()]}, "
+                f"{rel_cnts[lb.get_text()]}%)\n"
+                f"nan=({nans.get(lb.get_text(),0)}, "
+                f"{rel_nans.get(lb.get_text(),0)}%)\n"
+                f"nan_total=({round(nans.get(lb.get_text(),0)/n_nans*100,1)}%)"
+            )
 
     if dropna:
         # remove lines that start with nan
@@ -113,6 +124,7 @@ nan_total=({round(nans.get(lb.get_text(),0)/n_nans*100,1)}%)"""
         )
 
     # assign the new ytick labels
+    ax.set_yticks(ax.get_yticks())
     ax.set_yticklabels(new_ylabels)
 
     return fig, ax
@@ -184,6 +196,8 @@ def add_counts_to_xticks(
     .. image:: /images/add_counts_to_xticks_dropna.png
     """  # noqa
     # get the counts and the relative counts for the x_column
+    df = df.copy()
+    df[x_col] = df[x_col].astype(str)
     counts = df[x_col].value_counts(dropna=dropna).to_dict()
     rel_counts = {
         key: round(value / len(df) * 100, 1) for key, value in counts.items()
@@ -205,16 +219,22 @@ def add_counts_to_xticks(
     # nan=count
     # n%=rel_to_total
     # nan%=rel_to_n
-    # nan_total%=rel_to_total
-    new_xlabels = [
-        f"""{label.get_text()}
+    # nan_t%=rel_to_total
+    new_xlabels = []
+    for label in ax.get_xticklabels():
+        try:
+            _ = counts[label.get_text()]
+        except KeyError:
+            new_xlabels.append("")
+        else:
+            new_xlabels.append(
+                f"""{label.get_text()}
 n={counts[label.get_text()]}
 nan={nans.get(label.get_text(), 0)}
 n%={rel_counts[label.get_text()]}
 nan%={rel_nans.get(label.get_text(), 0)}
 nan_tot%={round(nans.get(label.get_text(),0)/n_nans*100,1)}"""
-        for label in ax.get_xticklabels()
-    ]
+            )
 
     if dropna:
         # remove lines that start with nan
@@ -227,6 +247,8 @@ nan_tot%={round(nans.get(label.get_text(),0)/n_nans*100,1)}"""
             f"{ax.get_ylabel()} (nan={len(nan_df)}, "
             f"{round(len(nan_df)/len(df)*100,1)}%)"
         )
+
+    ax.set_xticks(ax.get_xticks())
     ax.set_xticklabels(new_xlabels)
 
     return fig, ax

@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -24,6 +24,7 @@ def stripboxplot(
     count_info: bool = True,
     show_outliers: bool = True,
     show_legend: bool = False,
+    sort_by_median: bool = False,
 ) -> Tuple[plt.Figure, plt.Axes]:
     """Creates a stripboxplot with extra informative ticks. \
         Use fig.set_figheight() and/or fig.set_figwidth if labels \
@@ -47,6 +48,8 @@ def stripboxplot(
         Show outliers according to Seaborn's boxplot, by default True
     show_legend : bool, optional
         Show legend, by default False
+    sort_by_median : bool, optional
+        Orders the cat_col by median, by default False
 
     Returns
     -------
@@ -113,12 +116,23 @@ def stripboxplot(
 
     fig, ax = plt.subplots()
     df = df.copy()
+
     if dropna:
         df = df.dropna()
-    else:
-        df[cat_col] = df[cat_col].fillna("nan")
 
-    order = df.groupby(cat_col)[num_col].apply(np.median).sort_values().index
+    if sort_by_median:
+        order = (
+            df.dropna(subset=num_col)
+            .groupby(cat_col)[num_col]
+            .apply(np.median)
+            .sort_values()
+            .index
+        )
+    else:
+        order = df.set_index(cat_col).sort_index().index.unique()
+
+    df[cat_col] = df[cat_col].astype(str)
+    order = order.astype(str)
 
     if horizontal:
         sns.boxplot(
@@ -185,7 +199,7 @@ def stripboxplot(
 
 def try_diff_distribution_plots(
     values: NDArray[np.float64],
-) -> Tuple[plt.Figure, NDArray[plt.Axes], Dict[str, NDArray[np.float64]]]:
+) -> Tuple[plt.Figure, List[plt.Axes], Dict[str, NDArray[np.float64]]]:
     """Generates the histogram-, probability- and boxplot of \
         different transformations of the values.
 
@@ -196,7 +210,7 @@ def try_diff_distribution_plots(
 
     Returns
     -------
-    Tuple[plt.Figure, NDArray[plt.Axes], Dict[str, NDArray[np.float64]]]
+    Tuple[plt.Figure, List[plt.Axes], Dict[str, NDArray[np.float64]]]
         Returns the figure, the axes with the plots and the transformed values with \
             the transformation title.
         
@@ -244,11 +258,11 @@ def create_distribution_plots(
     values: NDArray[np.float64],
     title: str = "",
     fig: plt.Figure = None,
-    axes: NDArray[plt.Axes] = None,
+    axes: List[plt.Axes] = None,
     row_index: int = 0,
     hist_bins: int = 30,
     tight_layout: bool = True,
-) -> Tuple[plt.Figure, NDArray[plt.Axes]]:
+) -> Tuple[plt.Figure, List[plt.Axes]]:
     """Adds a histogram-, probabilty and boxplot to the axes.
 
     Parameters
@@ -259,7 +273,7 @@ def create_distribution_plots(
         Title of the plots, by default ""
     fig : plt.Figure, optional
         A matplotlib Figure, by default None
-    axes : NDArray[plt.Axes], optional
+    axes : List[plt.Axes], optional
         Axes to draw to plots on, by default None
     row_index : int, optional
         The row index of the axes for the plots to be added to, by default 0
@@ -271,7 +285,7 @@ def create_distribution_plots(
 
     Returns
     -------
-    Tuple[plt.Figure, NDArray[plt.Axes]]
+    Tuple[plt.Figure, List[plt.Axes]]
         The figure and the axes, with a histogram-, probability- and boxplot.
 
     Examples
