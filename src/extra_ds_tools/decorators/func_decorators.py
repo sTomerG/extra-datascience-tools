@@ -47,7 +47,9 @@ def timeit_arg_info_dec(
                             pd.DataFrame([list(range(1,10))]),
                             either=False,
                             **{'Even': 'this works!'})
-    param          type_hint                    default_value    arg_type                     arg_value                 arg_len
+    illustrate_decorater()
+    ---------------------------------------------------------------------------------------------------------------------------------
+        param          type_hint                    default_value    arg_type                     arg_value                 arg_len
     --  -------------  ---------------------------  ---------------  ---------------------------  ------------------------  ---------
     0  a_number       int                                           int                          42
     1  text           str                                           str                          Bob                       3
@@ -55,9 +57,10 @@ def timeit_arg_info_dec(
     3  df             pandas.core.frame.DataFrame                   pandas.core.frame.DataFrame                            (1, 9)
     4  either         bool                         True             bool                         False
     5  kwarg['Even']                                                str                          this works!               11
-    illustrate_decorater() took 1.0047540664672852 seconds to run.
+    illustrate_decorater() took 1.0050599575042725 seconds to run.
     Returned:
     Look how informative!
+    ---------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -73,15 +76,21 @@ def timeit_arg_info_dec(
                             pd.DataFrame([list(range(1,10))]),
                             either=False,
                             **{'Even': 'this works!'})
-            param          type_hint                    default_value    arg_type                     arg_value                 arg_len
-    --  -------------  ---------------------------  ---------------  ---------------------------  ------------------------  ---------
-    0  a_number       int                                           int                          42
-    1  text           str                                           str                          Bob                       3
-    2  lst            List[int]                                     list                         [0, 1, 2,  .. 7, 98, 99]  100
-    3  df             pandas.core.frame.DataFrame                   pandas.core.frame.DataFrame                            (1, 9)
-    4  either         bool                         True             bool                         False
-    5  kwarg['Even']                                                str                          this works!               11
-    illustrate_decorater() took 1.0 seconds to run.
+    test_timeit_dec()
+    ------------------------------------------------------------------------------------------------------------------------------
+        param        type_hint                   default_value    arg_type                     arg_value                 arg_len
+    --  -----------  --------------------------  ---------------  ---------------------------  ------------------------  ---------
+    0  getal        int                                          int                          1
+    1  woord                                    ''               str                          int                       3
+    2  lol          Union[List[str], NoneType]  None             numpy.ndarray                [10 10 10  ..  10 10 10]  (10,)
+    3  args[3]                                                   int                          1
+    4  args[4]                                                   int                          2
+    5  kwarg['0']                                                list                         [10, 10, 1 .. 0, 10, 10]  10
+    6  kwarg['df']                                               pandas.core.frame.DataFrame                            (1, 1)
+    test_timeit_dec() took 1.0049090385437012 seconds to run.
+    Returned:
+    None
+    ------------------------------------------------------------------------------------------------------------------------------
     
     See Also
     --------
@@ -94,12 +103,16 @@ def timeit_arg_info_dec(
         def wrapper(*args, **kwargs):
             if param_info:
                 args_and_kwargs = args_and_kwargs_repr(func, *args, **kwargs)
-                print(
-                    tabulate(
-                        pd.DataFrame(args_and_kwargs).fillna(""),
-                        headers="keys",
-                    )
+                table = tabulate(
+                    pd.DataFrame(args_and_kwargs).fillna(""),
+                    headers="keys",
                 )
+                table_len = len(max(table.split("\n"), key=len))
+                table = (
+                    f"\n\033[1m{func.__name__}()\033[0m"
+                    f"\n{'-' * table_len}\n{table}"
+                )
+                print(table)
             start_time = time()
             result = func(*args, **kwargs)
             exec_time = time() - start_time
@@ -108,6 +121,7 @@ def timeit_arg_info_dec(
             print(f"\n{func.__name__}() took {exec_time} seconds to run.")
             if print_output:
                 print(f"\nReturned:\n{result}")
+            print("-" * table_len)
             return result
 
         return wrapper

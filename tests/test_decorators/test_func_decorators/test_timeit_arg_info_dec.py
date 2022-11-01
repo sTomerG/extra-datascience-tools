@@ -30,7 +30,9 @@ def test_print_output(capfd):
         **{"Even": "this works!"}
     )
 
-    expected_output = """    param          type_hint                    default_value    arg_type                     arg_value                 arg_len
+    expected_output = """illustrate_decorater()
+---------------------------------------------------------------------------------------------------------------------------------
+    param          type_hint                    default_value    arg_type                     arg_value                 arg_len
 --  -------------  ---------------------------  ---------------  ---------------------------  ------------------------  ---------
  0  a_number       int                                           int                          42
  1  text           str                                           str                          Bob                       3
@@ -40,8 +42,7 @@ def test_print_output(capfd):
  5  kwarg['Even']                                                str                          this works!               11
 
 illustrate_decorater() took 1.0 seconds to run.
-
-'Look how informative!'"""  # noqa
+---------------------------------------------------------------------------------------------------------------------------------"""  # noqa
     out, _ = capfd.readouterr()
     assert (
         SequenceMatcher(a=out.strip(), b=expected_output.strip()).ratio()
