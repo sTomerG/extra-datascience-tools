@@ -1,5 +1,6 @@
 [![Version](https://img.shields.io/pypi/v/extra-datascience-tools)](https://pypi.org/project/extra-datascience-tools/)
 [![Downloads](https://pepy.tech/badge/extra-datascience-tools)](https://pepy.tech/project/extra-datascience-tools)
+[![Downloads](https://pepy.tech/badge/extra-datascience-tools/month)](https://pepy.tech/project/extra-datascience-tools)
 ![](https://img.shields.io/github/license/sTomerG/extra-datascience-tools)
 ![](https://img.shields.io/pypi/pyversions/extra-datascience-tools)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
