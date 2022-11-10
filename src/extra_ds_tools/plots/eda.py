@@ -199,6 +199,7 @@ def stripboxplot(
 
 def try_diff_distribution_plots(
     values: NDArray[np.float64],
+    hist_bins: int = 30,
 ) -> Tuple[plt.Figure, List[plt.Axes], Dict[str, NDArray[np.float64]]]:
     """Generates the histogram-, probability- and boxplot of \
         different transformations of the values.
@@ -207,6 +208,8 @@ def try_diff_distribution_plots(
     ----------
     values : NDArray[np.float64]
         A list or numpy array of floats.
+    hist_bins : int, optional
+        Amount of bins for the histogram, by default 30
 
     Returns
     -------
@@ -219,9 +222,9 @@ def try_diff_distribution_plots(
     >>> from numpy.random import default_rng
     >>> rng = default_rng(42)
     >>> values = rng.pareto(a=100, size=1000)
-    >>> fig, axes, transformed_values = try_diff_distribution_plots(values)
+    >>> fig, axes, transformed_values = try_diff_distribution_plots(values, hist_bins=40)
     >>> print(transformed_values.keys())
-    dict_keys(['untransformed', 'log', 'square-root', 'cube-root', 'reciprocal', 'yeo-johnson', 'box-cox'])
+    dict_keys(['untransformed', 'log', 'log1p', 'exponential', 'square-root', 'cube-root', 'reciprocal', 'yeo-johnson', 'box-cox'])
     >>> print(transformed_values['log'][:2])
     [-3.71590427 -3.74494525]
     >>> fig
@@ -247,6 +250,7 @@ def try_diff_distribution_plots(
             axes=axes,
             row_index=index,
             tight_layout=False,
+            hist_bins=hist_bins,
         )
     fig.set_figheight(len(transformed_distributions) * 3)
     fig.set_figwidth(10)
