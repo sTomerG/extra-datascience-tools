@@ -26,9 +26,11 @@ def apply_different_numeric_transformations(
     >>> apply_different_numeric_transformations([2,3,4])
     {'untransformed': array([2., 3., 4.]),
     'log': array([0.69314718, 1.09861229, 1.38629436]),
-    'square-root': array([1.41421356, 1.73205081, 2.]),
+    'log1p': array([1.09861229, 1.38629436, 1.60943791]),
+    'exponential': array([ 7.3890561 , 20.08553692, 54.59815003]),
+    'square-root': array([1.41421356, 1.73205081, 2.        ]),
     'cube-root': array([1.25992105, 1.44224957, 1.58740105]),
-    'reciprocal': array([0.5, 0.33333333, 0.25]),
+    'reciprocal': array([0.5       , 0.33333333, 0.25      ]),
     'yeo-johnson': array([1.55048017, 2.1536574 , 2.69802755]),
     'box-cox': array([0.85657355, 1.54652658, 2.14655732])}
     """
@@ -37,6 +39,8 @@ def apply_different_numeric_transformations(
 
     numpy_transformers = [
         (np.log, "log"),
+        (np.log1p, "log1p"),
+        (np.exp, "exponential"),
         (np.sqrt, "square-root"),
         (np.cbrt, "cube-root"),
         (np.reciprocal, "reciprocal"),
