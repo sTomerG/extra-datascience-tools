@@ -1,3 +1,4 @@
+import warnings
 from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
@@ -254,16 +255,18 @@ def try_diff_distribution_plots(
                 hist_bins=hist_bins,
             )
         except (ValueError, OverflowError) as e:
-            raise UserWarning(
-                "Cannot plot the distribution of the "
-                f"'{transformation_name}': {e}"
+            warnings.warn(
+                f"Cannot plot the distribution of the '{transformation_name}':"
+                f" {e}",
+                UserWarning,
             )
+
     fig.set_figheight(len(transformed_distributions) * 3)
     fig.set_figwidth(10)
     try:
         fig.tight_layout()
     except (ValueError, OverflowError) as e:
-        raise UserWarning(f"Cannot run 'fig.tight_layout()': {e}")
+        warnings.warn(f"Cannot run 'fig.tight_layout()': {e}", UserWarning)
     return fig, axes, transformed_distributions
 
 
