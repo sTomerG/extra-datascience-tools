@@ -37,4 +37,6 @@ If problems arise make sure to have the latest version of pip:
 ## Usage
     >>> import extra_ds_tools
 
+For more information see [the tutorial](https://extra-datascience-tools.readthedocs.io/en/latest/notebooks/tutorial.html).
+
 
