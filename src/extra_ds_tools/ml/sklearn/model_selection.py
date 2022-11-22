@@ -6,26 +6,30 @@ from sklearn.model_selection import GridSearchCV
 
 def filter_tried_params(
     gridsearchcv: GridSearchCV,
-    prev_gridsearches: List[GridSearchCV],
+    tried_gridsearches: List[GridSearchCV],
 ) -> List[dict]:
-    """Filters out previsouly tried parameters for a scikit-learn gridsearch if the \
+    """Filters out previously tried parameters for a scikit-learn gridsearch if the \
         model otherwise is identically the same.
 
     Parameters
     ----------
     gridsearchcv : GridSearchCV
         The gridsearch model you want to run.
-    prev_gridsearches : List[GridSearchCV]
+    tried_gridsearches : List[GridSearchCV]
         The previous gridsearch models you've already run.
 
     Returns
     -------
     List[dict]
-        A parameter grid without previously tried parameters
+        A parameter grid without previously tried parameters.
+        
+    Examples
+    --------
+    Click `here. <https://extra-datascience-tools.readthedocs.io/en/latest/notebooks/tutorial.html#filter_tried_params>`_
     """  # noqa
 
     tried_params = []
-    for prev_gs in prev_gridsearches:
+    for prev_gs in tried_gridsearches:
 
         # only compare param grids if the estimator steps are identical
         if str(gridsearchcv.get_params()["estimator__steps"]) == str(
