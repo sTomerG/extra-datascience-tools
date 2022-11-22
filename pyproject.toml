@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "extra-datascience-tools"
-version = "0.3.4"
+version = "0.4.0"
 description = "Python package which offers additional tools for data scientists."
 license = "MIT"
 homepage = "https://extra-datascience-tools.readthedocs.io/en/latest/index.html"
 documentation = "https://extra-datascience-tools.readthedocs.io/en/latest/index.html"
 repository = "https://github.com/sTomerG/extra-datascience-tools"
-keywords = ["data science", "python",  "plots", "visualizations", "decorators"]
+keywords = ["data science", "python",  "plots", "visualizations", "decorators", "ml", "machine learning"]
 authors = ["Tomer Gabay <tomergabay001@gmail.com>"]
 readme = "README.md"
 packages = [{include = "extra_ds_tools", from = "src"}]
