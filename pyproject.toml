@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "extra-datascience-tools"
-version = "0.4.0"
+version = "0.4.1"
 description = "Python package which offers additional tools for data scientists."
 license = "MIT"
 homepage = "https://extra-datascience-tools.readthedocs.io/en/latest/index.html"
