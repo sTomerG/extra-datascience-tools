@@ -254,7 +254,7 @@ def try_diff_distribution_plots(
                 tight_layout=False,
                 hist_bins=hist_bins,
             )
-        except (ValueError, OverflowError) as e:
+        except (ValueError, OverflowError, IndexError) as e:
             warnings.warn(
                 f"Cannot plot the distribution of the '{transformation_name}':"
                 f" {e}",
