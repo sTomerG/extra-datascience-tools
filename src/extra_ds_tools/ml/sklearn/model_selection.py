@@ -50,8 +50,7 @@ def filter_tried_params(
 
     # remove duplicates
     tried_params = [
-        dict(tuple_)
-        for tuple_ in {tuple(dict_.items()) for dict_ in tried_params}
+        i for n, i in enumerate(tried_params) if i not in tried_params[n + 1 :]
     ]
 
     # generate the new params
@@ -75,8 +74,7 @@ def filter_tried_params(
 
     # remove duplicates
     new_params = [
-        dict(tuple_)
-        for tuple_ in {tuple(dict_.items()) for dict_ in new_params}
+        i for n, i in enumerate(new_params) if i not in new_params[n + 1 :]
     ]
 
     # return new_params as a list with dictionaires

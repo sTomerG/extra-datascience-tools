@@ -11,7 +11,7 @@ def gridsearchcvs_tree_dict():
     for i in range(1, 4):
         param_grid = {
             "decisiontreeregressor__max_depth": [i, i + 1],
-            "decisiontreeregressor__splitter": ["best", "random"],
+            "decisiontreeregressor__list": [[1, 2], [3, 4]],
         }
         clf = GridSearchCV(model, param_grid)
         trees.append(clf)
