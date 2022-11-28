@@ -265,7 +265,7 @@ def try_diff_distribution_plots(
     fig.set_figwidth(10)
     try:
         fig.tight_layout()
-    except (ValueError, OverflowError) as e:
+    except (ValueError, OverflowError, IndexError) as e:
         warnings.warn(f"Cannot run 'fig.tight_layout()': {e}", UserWarning)
     return fig, axes, transformed_distributions
 
