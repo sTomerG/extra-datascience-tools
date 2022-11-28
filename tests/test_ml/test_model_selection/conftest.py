@@ -1,6 +1,6 @@
 import pytest
 from sklearn.model_selection import GridSearchCV
-from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.tree import DecisionTreeRegressor
 
 
@@ -76,6 +76,104 @@ def gridsearchcvs_tree_dictlist():
 def gridsearchcvs_tree_listdict():
 
     model = make_pipeline(DecisionTreeRegressor())
+    trees = []
+    param_grids = [
+        [
+            {
+                "decisiontreeregressor__max_depth": [1, 2],
+                "decisiontreeregressor__splitter": ["best"],
+            },
+            {
+                "decisiontreeregressor__max_depth": [1, 2],
+                "decisiontreeregressor__splitter": ["random"],
+            },
+        ]
+    ]
+    param_grids += [
+        {
+            "decisiontreeregressor__max_depth": [i, i + 1],
+            "decisiontreeregressor__splitter": ["best", "random"],
+        }
+        for i in range(2, 4)
+    ]
+    for grid in param_grids:
+        clf = GridSearchCV(model, grid)
+        trees.append(clf)
+    return trees
+
+
+@pytest.fixture(scope="module")
+def gridsearchcvs_tree_dict_pipeline():
+    trees = []
+    model = make_pipeline([("decisiontreeregressor", DecisionTreeRegressor())])
+    for i in range(1, 4):
+        param_grid = {
+            "decisiontreeregressor__max_depth": [i, i + 1],
+            "decisiontreeregressor__list": [[1, 2], [3, 4]],
+        }
+        clf = GridSearchCV(model, param_grid)
+        trees.append(clf)
+    return trees
+
+
+@pytest.fixture(scope="module")
+def gridsearchcvs_tree_list_pipeline():
+
+    model = make_pipeline(DecisionTreeRegressor())
+    trees = []
+    param_grids = [
+        [
+            {
+                "decisiontreeregressor__max_depth": [i, i + 1],
+                "decisiontreeregressor__splitter": ["best"],
+            },
+            {
+                "decisiontreeregressor__max_depth": [i, i + 1],
+                "decisiontreeregressor__splitter": ["random"],
+            },
+        ]
+        for i in range(1, 4)
+    ]
+    for grid in param_grids:
+        clf = GridSearchCV(model, grid)
+        trees.append(clf)
+    return trees
+
+
+@pytest.fixture(scope="module")
+def gridsearchcvs_tree_dictlist_pipeline():
+
+    model = Pipeline(DecisionTreeRegressor())
+    trees = []
+    param_grids = [
+        {
+            "decisiontreeregressor__max_depth": [1, 2],
+            "decisiontreeregressor__splitter": ["best", "random"],
+        }
+    ]
+    param_grids += [
+        [
+            {
+                "decisiontreeregressor__max_depth": [i, i + 1],
+                "decisiontreeregressor__splitter": ["best"],
+            },
+            {
+                "decisiontreeregressor__max_depth": [i, i + 1],
+                "decisiontreeregressor__splitter": ["random"],
+            },
+        ]
+        for i in range(2, 4)
+    ]
+    for grid in param_grids:
+        clf = GridSearchCV(model, grid)
+        trees.append(clf)
+    return trees
+
+
+@pytest.fixture(scope="module")
+def gridsearchcvs_tree_listdict_pipeline():
+
+    model = Pipeline(DecisionTreeRegressor())
     trees = []
     param_grids = [
         [

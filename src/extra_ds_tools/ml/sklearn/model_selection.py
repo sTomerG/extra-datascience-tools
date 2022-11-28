@@ -1,6 +1,7 @@
 from itertools import product
 from typing import List
 
+import numpy as np
 from sklearn.model_selection import GridSearchCV
 
 
@@ -32,8 +33,14 @@ def filter_tried_params(
     for prev_gs in tried_gridsearches:
 
         # only compare param grids if the estimator steps are identical
-        if str(gridsearchcv.get_params()["estimator__steps"]) == str(
-            prev_gs.get_params()["estimator__steps"]
+        # 'estimator__steps' for a Pipeline created with make_pipeline
+        # 'steps' for a Pipeline created with Pipeline
+        # np.nan to make sure if key is not found the statement is False
+        if (
+            str(gridsearchcv.get_params().get("estimator__steps", np.nan))
+            == str(prev_gs.get_params().get("estimator__steps", np.nan))
+        ) or str(gridsearchcv.get_params().get("steps", np.nan)) == str(
+            prev_gs.get_params().get("steps", np.nan)
         ):
             # if the param grid is a dictionairy
             if isinstance(prev_gs.param_grid, dict):
