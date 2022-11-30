@@ -105,7 +105,7 @@ def gridsearchcvs_tree_listdict():
 @pytest.fixture(scope="module")
 def gridsearchcvs_tree_dict_pipeline():
     trees = []
-    model = make_pipeline([("decisiontreeregressor", DecisionTreeRegressor())])
+    model = Pipeline([("decisiontreeregressor", DecisionTreeRegressor())])
     for i in range(1, 4):
         param_grid = {
             "decisiontreeregressor__max_depth": [i, i + 1],
@@ -119,7 +119,7 @@ def gridsearchcvs_tree_dict_pipeline():
 @pytest.fixture(scope="module")
 def gridsearchcvs_tree_list_pipeline():
 
-    model = make_pipeline(DecisionTreeRegressor())
+    model = Pipeline([("decisiontreeregressor", DecisionTreeRegressor())])
     trees = []
     param_grids = [
         [
@@ -143,7 +143,7 @@ def gridsearchcvs_tree_list_pipeline():
 @pytest.fixture(scope="module")
 def gridsearchcvs_tree_dictlist_pipeline():
 
-    model = Pipeline(DecisionTreeRegressor())
+    model = Pipeline([("decisiontreeregressor", DecisionTreeRegressor())])
     trees = []
     param_grids = [
         {
@@ -173,7 +173,7 @@ def gridsearchcvs_tree_dictlist_pipeline():
 @pytest.fixture(scope="module")
 def gridsearchcvs_tree_listdict_pipeline():
 
-    model = Pipeline(DecisionTreeRegressor())
+    model = Pipeline([("decisiontreeregressor", DecisionTreeRegressor())])
     trees = []
     param_grids = [
         [
