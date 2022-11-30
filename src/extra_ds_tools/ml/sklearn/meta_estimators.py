@@ -81,5 +81,5 @@ class EstimatorSwitch(TransformerMixin, BaseEstimator):
              Transformed X.
         """
         if self.apply:
-            return self.estimator.transform(X, y, **fit_params)
+            return self.estimator.transform(X, **fit_params)
         return X
